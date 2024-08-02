@@ -1,0 +1,25 @@
+version: '3.8'  # Specify Docker Compose version
+
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: myNginx  # Use your built image name
+    container_name: myNginxContainer # Your custom container name
+    ports:
+      - "80:80"
+    volumes:
+      - /home/ubuntu/sites:/home/ubuntu/sites
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  
+  
+  # node-app: # Optional: Add services for your Node apps for automatic startup
+  #   build:
+  #     context: ./path/to/node-app  # Replace with your Node.js app's path
+  #     dockerfile: Dockerfile.node  # If you have a separate Dockerfile for Node
+  #   ports:
+  #     - "3000:3000"
+
+  # Add more services for your other applications (e.g., Next.js, React) as needed
+  # ...
