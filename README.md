@@ -17,15 +17,16 @@ This project sets up a highly configurable Nginx web server using Docker, design
 
 ## Project Structure
 
+```md
 my-nginx-project/
 ├── Dockerfile             # Defines the Docker image
 ├── nginx.conf             # Main Nginx configuration
 ├── sites-available/       # Individual site configurations
 │   ├── static-site1.conf
 │   └── static-site2.conf
-
 └── conf.d/                # Reverse proxy configuration(s)
     └── server.conf
+```
 
 ## Prerequisites
 
