@@ -28,7 +28,7 @@ nginx-project/
 
 ```md
 
-  sites/
+  www/
     ├── config/
     │   ├── sites-available/         # Individual site configurations
     │   │   ├── static-site1.conf
@@ -48,9 +48,9 @@ nginx-project/
 * **Docker:** Make sure you have Docker installed and running on your system.
 * **Environment File**
     This file contains the `VOLUME_PATH` variable, which needs to be set differently depending on the operating system:
-    * **Windows:** VOLUME_PATH=D:/sites
-    * **Linux:** VOLUME_PATH=/home/ubuntu/sites
-    * **macOS:** VOLUME_PATH=/Users/yourusername/sites
+    * **Windows:** VOLUME_PATH=D:/www
+    * **Linux:** VOLUME_PATH=/home/ubuntu/www
+    * **macOS:** VOLUME_PATH=/Users/yourusername/www
     **Note:** *It is Mandatory to specify the `VOLUME_PATH` based on the operating system in .env or docker-compose.yml file*
         
 * **Node.js Applications:** Your Node.js applications should be running on the host machine on their respective ports.
@@ -81,7 +81,7 @@ To run this docker directly
 ```bash
 docker run -d -p 80:80 \
            --add-host=host.docker.internal:host-gateway \
-           -v /home/ubuntu/sites:/sites \
+           -v /home/ubuntu/www:/www \
            --name NginxContainer myNginx
 ```
 
@@ -94,7 +94,7 @@ keep the static sites conf in sites-available
     server {
         listen 80;
         server_name anveshpoda.tech; 
-        root /sites/anveshpoda.tech;
+        root /www/anveshpoda.tech;
         index index.html;
     }
 ```

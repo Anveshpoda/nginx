@@ -11,7 +11,7 @@ EXPOSE 80
 
 # Mount static sites and configuration directories from the host machine
 # Define default volume path as an environment variable (this will be overridden at runtime)
-ENV VOLUME_PATH=/home/ubuntu/sites
+ENV VOLUME_PATH=/home/ubuntu/www
 
 # Start Nginx and the configuration watcher script
 CMD ["/bin/bash", "-c", "nginx -g 'daemon off;' & \

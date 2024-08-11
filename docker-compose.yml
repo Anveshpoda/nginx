@@ -10,8 +10,8 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ${VOLUME_PATH}:/sites
+      - ${VOLUME_PATH}:/www
     environment:
-      VOLUME_PATH: /home/ubuntu/sites # linux
+      VOLUME_PATH: /home/ubuntu/www # linux
     extra_hosts:
       - "host.docker.internal:host-gateway"  
