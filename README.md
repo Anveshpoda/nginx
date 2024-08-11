@@ -60,7 +60,7 @@ nginx-project/
 
 1. **Build the Docker Image:**
 ```bash
-docker build -t myNginx . 
+docker build -t my-nginx . 
 ```
 
 ### To run this docker
@@ -82,7 +82,7 @@ To run this docker directly
 docker run -d -p 80:80 \
            --add-host=host.docker.internal:host-gateway \
            -v /home/ubuntu/www:/www \
-           --name NginxContainer myNginx
+           --name NginxContainer my-nginx
 ```
 
 ## Rewrite and Redirection

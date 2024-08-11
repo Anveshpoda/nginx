@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: myNginx  # Use your built image name
+    image: my-nginx  # Use your built image name
     container_name: myNginxContainer # Your custom container name
     ports:
       - "80:80"
