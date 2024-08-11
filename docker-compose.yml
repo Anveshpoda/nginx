@@ -10,16 +10,8 @@ services:
     ports:
       - "80:80"
     volumes:
-      - /home/ubuntu/sites:/home/ubuntu/sites
+      - ${VOLUME_PATH}:/sites
+    environment:
+      VOLUME_PATH: /home/ubuntu/sites # linux
     extra_hosts:
       - "host.docker.internal:host-gateway"  
-  
-  # node-app: # Optional: Add services for your Node apps for automatic startup
-  #   build:
-  #     context: ./path/to/node-app  # Replace with your Node.js app's path
-  #     dockerfile: Dockerfile.node  # If you have a separate Dockerfile for Node
-  #   ports:
-  #     - "3000:3000"
-
-  # Add more services for your other applications (e.g., Next.js, React) as needed
-  # ...

@@ -18,21 +18,43 @@ This project sets up a highly configurable Nginx web server using Docker, design
 ## Project Structure
 
 ```md
-my-nginx-project/
+nginx-project/
 ├── Dockerfile             # Defines the Docker image
 ├── nginx.conf             # Main Nginx configuration
-├── sites-available/       # Individual site configurations
-│   ├── static-site1.conf
-│   └── static-site2.conf
-└── conf.d/                # Reverse proxy configuration(s)
-    └── server.conf
+└── .env                   # Define root dir which contains the configuration and sites
+
+```
+**Create Root dir for static sites and Create a sub folder named *config* in it then define it in .env**
+
+```md
+
+  sites/
+    ├── config/
+    │   ├── sites-available/         # Individual site configurations
+    │   │   ├── static-site1.conf
+    │   │   └── static-site2.conf
+    │   └── conf.d/                  # Reverse proxy configuration(s)
+    │       └── server.conf
+    ├── site1/
+    │   └── ... (site 1 files)
+    ├── site2/
+    │   └── ... (site 2 files)
+    └── ... (other site directories)
+
 ```
 
 ## Prerequisites
 
 * **Docker:** Make sure you have Docker installed and running on your system.
+* **Environment File**
+    This file contains the `VOLUME_PATH` variable, which needs to be set differently depending on the operating system:
+    * **Windows:** VOLUME_PATH=D:/sites
+    * **Linux:** VOLUME_PATH=/home/ubuntu/sites
+    * **macOS:** VOLUME_PATH=/Users/yourusername/sites
+    **Note:** *It is Mandatory to specify the `VOLUME_PATH` based on the operating system in .env or docker-compose.yml file*
+        
 * **Node.js Applications:** Your Node.js applications should be running on the host machine on their respective ports.
-* **Static Websites:** Ensure your static website files are located in the `/home/ubuntu/sites` directory (or adjust the path in the Dockerfile).
+* **Static Websites:** Ensure your static website files are located in the `VOLUME_PATH` directory.
 
 ## How to Use
 
@@ -59,7 +81,7 @@ To run this docker directly
 ```bash
 docker run -d -p 80:80 \
            --add-host=host.docker.internal:host-gateway \
-           -v /home/ubuntu/sites:/home/ubuntu/sites \
+           -v /home/ubuntu/sites:/sites \
            --name NginxContainer myNginx
 ```
 
@@ -69,22 +91,26 @@ docker run -d -p 80:80 \
 keep the static sites conf in sites-available
 
 ```nginx
-server {
-    listen 80;
-    server_name anveshpoda.tech; 
-    root /home/ubuntu/sites/anveshpoda.tech;
-    index index.html;
-}
+    server {
+        listen 80;
+        server_name anveshpoda.tech; 
+        root /sites/anveshpoda.tech;
+        index index.html;
+    }
 ```
 keep the sites running with ports conf in conf.d
 
 ```nginx
-server {
-    listen 80;
-     server_name anveshpoda.tech; 
-     root /home/ubuntu/sites/anveshpoda.tech;
-     index index.html;
-}
+    server {
+        listen 80;
+        server_name react.anveshpoda.tech;
+
+        location / {
+            proxy_pass http://host.docker.internal:3000; 
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+        }
+    }
 ```
 
 ## Links

@@ -1,18 +1,26 @@
 FROM nginx:latest
 
-# Install curl to allow health checks on proxied services
-RUN apt-get update && apt-get install -y curl
+# Install curl and inotify-tools
+RUN apt-get update && apt-get install -y curl inotify-tools
 
-# Copy your Nginx configuration files
+# Copy your main Nginx configuration file
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY sites-available/ /etc/nginx/sites-available/
-COPY conf.d/ /etc/nginx/conf.d/
-
-# Create symbolic links for all static site configurations in sites-enabled
-RUN find /etc/nginx/sites-available -name "*.conf" -exec ln -s {} /etc/nginx/sites-enabled/ \;
-
-# Mount static sites from the host machine
-VOLUME /home/ubuntu/sites
 
 # Expose the port Nginx will listen on (80 by default)
 EXPOSE 80
+
+# Mount static sites and configuration directories from the host machine
+# Define default volume path as an environment variable (this will be overridden at runtime)
+ENV VOLUME_PATH=/home/ubuntu/sites
+
+# Start Nginx and the configuration watcher script
+CMD ["/bin/bash", "-c", "nginx -g 'daemon off;' & \
+    while inotifywait -r -e create,delete,modify,move $VOLUME_PATH/config; do \
+        find $VOLUME_PATH/config/sites-available -name '*.conf' -exec ln -s {} /etc/nginx/sites-enabled/ \; \
+        if ! cp -r $VOLUME_PATH/config/conf.d/* /etc/nginx/conf.d/; then \
+            echo \"Error copying conf.d files\" >&2; \
+        fi \
+        if ! nginx -s reload; then \
+            echo \"Error reloading Nginx\" >&2; \
+        fi \
+    done"]
